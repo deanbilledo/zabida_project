@@ -33,7 +33,7 @@ $posts = array_slice(get_all_posts(), 0, 3);
 
       <div class="flex flex-wrap gap-4">
         <a href="#blog" class="bg-ink text-paper px-6 py-3 text-sm uppercase tracking-wide hover:bg-clay transition-colors">
-          Read the journal
+          Browse Recent Posts
         </a>
         <a href="./contact.php" class="border border-ink px-6 py-3 text-sm uppercase tracking-wide hover:bg-ink hover:text-paper transition-colors">
           Get involved
@@ -155,8 +155,13 @@ $posts = array_slice(get_all_posts(), 0, 3);
   <div class="flex items-end justify-between mb-14 flex-wrap gap-4">
     <div>
       <p class="font-mono text-xs uppercase tracking-[0.2em] text-ink/50 mb-4">Latest updates</p>
-      <h2 class="font-serif text-3xl md:text-4xl">From the journal</h2>
+      <h2 class="font-serif text-3xl md:text-4xl">Activities</h2>
     </div>
+    <!-- ADDED: "View all" link with arrow pointing to activities.php -->
+    <a href="/zabida_project/activities-post.php" class="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-ink/70 hover:text-clay transition-colors">
+      <span>View all activities</span>
+      <span class="text-base group-hover:translate-x-1 transition-transform">&rarr;</span>
+    </a>
   </div>
 
   <div id="blog-grid" class="divide-y divide-ink/10">
@@ -166,28 +171,89 @@ $posts = array_slice(get_all_posts(), 0, 3);
       <article class="grid grid-cols-1 sm:grid-cols-[80px_1fr_120px] md:grid-cols-[100px_1fr_160px] gap-4 sm:gap-6 items-start py-8">
         <p class="font-mono text-sm text-ink/40"><?= e(format_post_date($post['published_at'])) ?></p>
         <div>
-          <h3 class="font-serif text-2xl mb-2 hover:text-clay transition-colors">
-            <a href="/post.php?id=<?= (int)$post['id'] ?>"><?= e($post['title']) ?></a>
-          </h3>
+         <h3 class="font-serif text-2xl mb-2 hover:text-clay transition-colors">
+          <a href="/zabida_project/post.php?id=<?= (int)$post['id'] ?>" class="js-post-link" data-post-id="<?= (int)$post['id'] ?>"><?= e($post['title']) ?></a>
+        </h3>
           <p class="text-ink/60 leading-relaxed"><?= e($post['excerpt']) ?></p>
         </div>
         <div class="aspect-square w-full rounded-lg bg-gray-100 overflow-hidden flex items-center justify-center border border-ink/10">
-          <img src="./<?= e($post['image']) ?>" alt="" class="w-full h-full object-contain p-1">
+          <img src="/zabida_project/<?= e($post['image']) ?>" alt="" class="w-full h-full object-contain p-1">
         </div>
       </article>
     <?php endforeach; endif; ?>
   </div>
 </section>
 
-<!-- CTA -->
-<section class="bg-ink text-paper py-20 md:py-28">
-  <div class="max-w-3xl mx-auto px-6 text-center">
-    <h2 class="font-serif text-3xl md:text-5xl mb-6 leading-tight">Want to work with us?</h2>
-    <p class="text-paper/70 text-lg mb-10">Whether you're a partner organization, a volunteer, or a donor, there's a place at this table.</p>
-    <a href="/contact.php" class="inline-block bg-paper text-ink px-8 py-3.5 text-sm uppercase tracking-wide hover:bg-gold transition-colors">Get in touch</a>
-  </div>
-</section>
+
 
 </main>
+<!-- Post Modal -->
+<div id="post-modal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+  <div id="post-modal-backdrop" class="absolute inset-0 bg-ink/60 backdrop-blur-sm"></div>
+  <div class="relative h-full flex items-start sm:items-center justify-center p-4 sm:p-8 overflow-y-auto">
+    <div class="relative bg-paper w-full max-w-3xl rounded-lg shadow-2xl my-8 sm:my-0">
+      <button id="post-modal-close" type="button" class="absolute top-4 right-4 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-ink/5 hover:bg-ink/10 text-ink transition-colors" aria-label="Close">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <div id="post-modal-content" class="px-6 py-10 sm:px-10 sm:py-12">
+        <div class="animate-pulse text-ink/40 font-mono text-sm">Loading&hellip;</div>
+      </div>
+    </div>
+  </div>
+</div>
 
+<script>
+(function () {
+  var modal      = document.getElementById('post-modal');
+  var backdrop   = document.getElementById('post-modal-backdrop');
+  var closeBtn   = document.getElementById('post-modal-close');
+  var contentBox = document.getElementById('post-modal-content');
+  var lastFocused;
+
+  function openModal(id) {
+    lastFocused = document.activeElement;
+    contentBox.innerHTML = '<div class="animate-pulse text-ink/40 font-mono text-sm">Loading&hellip;</div>';
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('overflow-hidden');
+    history.pushState({ postModal: id }, '', './post.php?id=' + id);
+
+    fetch('./post-fragment.php?id=' + encodeURIComponent(id))
+      .then(function (res) { return res.text(); })
+      .then(function (html) { contentBox.innerHTML = html; })
+      .catch(function () {
+        contentBox.innerHTML = '<p class="text-ink/70">Sorry, something went wrong loading this post.</p>';
+      });
+  }
+
+  function closeModal(skipHistory) {
+    modal.classList.add('hidden');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('overflow-hidden');
+    if (!skipHistory) history.pushState({}, '', './index.php#blog');
+    if (lastFocused) lastFocused.focus();
+  }
+
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest('.js-post-link');
+    if (link) {
+      e.preventDefault();
+      openModal(link.dataset.postId);
+    }
+  });
+
+  closeBtn.addEventListener('click', function () { closeModal(); });
+  backdrop.addEventListener('click', function () { closeModal(); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+  });
+
+  window.addEventListener('popstate', function () {
+    if (!modal.classList.contains('hidden')) closeModal(true);
+  });
+})();
+</script>
 <?php require __DIR__ . '/includes/footer.php'; ?>

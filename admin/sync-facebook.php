@@ -19,7 +19,7 @@ require __DIR__ . '/../includes/header.php';
   <?php require __DIR__ . '/_admin_nav.php'; ?>
 
   <h1 class="font-serif text-3xl mb-4">Facebook sync</h1>
-  <p class="text-ink/70 leading-relaxed mb-10">Pulls recent posts from <a href="https://www.facebook.com/zabida.org" target="_blank" rel="noopener noreferrer" class="underline hover:text-clay">facebook.com/zabida.org</a> into the Journal. Runs automatically via the scheduler, or trigger it manually below.</p>
+  <p class="text-ink/70 leading-relaxed mb-10">Pulls recent posts from <a href="https://www.facebook.com/zabidadotorg" target="_blank" rel="noopener noreferrer" class="underline hover:text-clay">facebook.com/zabida.org</a> into the Journal. Runs automatically via the scheduler, or trigger it manually below.</p>
 
   <?php if (!facebook_sync_ready()): ?>
     <div class="text-clay text-sm font-medium border border-clay/30 bg-clay/5 px-5 py-4 mb-8">
