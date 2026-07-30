@@ -1,10 +1,13 @@
 <?php
 /**
  * ZABIDA — Shared helper functions
- * Posts are read from MySQL when available (see config/database.php),
+ * Posts are read from and saved to MySQL when available (see config/database.php),
  * and fall back to the flat-file JSON store in /database/posts.json
- * so the site is fully functional before a database is provisioned.
+ * so the site remains functional even without an active database connection.
  */
+
+// MUST BE HERE: Load database config so get_db() is available
+require_once __DIR__ . '/../config/database.php';
 
 define('POSTS_STORE', __DIR__ . '/../database/posts.json');
 
@@ -29,7 +32,21 @@ function get_all_posts(): array
 
 function get_post_by_id(int $id): ?array
 {
-    foreach (get_all_posts() as $post) {
+    $pdo = get_db();
+    if ($pdo) {
+        try {
+            $stmt = $pdo->prepare('SELECT * FROM posts WHERE id = :id LIMIT 1');
+            $stmt->execute([':id' => $id]);
+            $post = $stmt->fetch();
+            if ($post) {
+                return $post;
+            }
+        } catch (PDOException $e) {
+            error_log('ZABIDA get_post_by_id DB error: ' . $e->getMessage());
+        }
+    }
+
+    foreach (read_posts_store() as $post) {
         if ((int)$post['id'] === $id) {
             return $post;
         }
@@ -63,6 +80,40 @@ function next_post_id(array $posts): int
 
 function create_post_record(array $fields): array
 {
+    $pdo = get_db();
+    
+    // 1. Primary: Save to MySQL database
+    if ($pdo) {
+        try {
+            $stmt = $pdo->prepare('
+                INSERT INTO posts (title, excerpt, body, image, source, published_at) 
+                VALUES (:title, :excerpt, :body, :image, :source, :published_at)
+            ');
+            
+            $stmt->execute([
+                ':title'        => $fields['title'],
+                ':excerpt'      => $fields['excerpt'],
+                ':body'         => $fields['body'] ?? $fields['excerpt'],
+                ':image'        => $fields['image'] ?? 'assets/images/zabida_logo.png',
+                ':source'       => $fields['source'] ?? 'manual',
+                ':published_at' => $fields['published_at'] ?? date('Y-m-d'),
+            ]);
+
+            return [
+                'id'           => (int)$pdo->lastInsertId(),
+                'title'        => $fields['title'],
+                'excerpt'      => $fields['excerpt'],
+                'body'         => $fields['body'] ?? $fields['excerpt'],
+                'image'        => $fields['image'] ?? 'assets/images/zabida_logo.png',
+                'source'       => $fields['source'] ?? 'manual',
+                'published_at' => $fields['published_at'] ?? date('Y-m-d'),
+            ];
+        } catch (PDOException $e) {
+            error_log('ZABIDA create_post_record DB error: ' . $e->getMessage());
+        }
+    }
+
+    // 2. Fallback: Save to JSON store
     $posts = read_posts_store();
     $post = [
         'id'            => next_post_id($posts),
@@ -80,6 +131,27 @@ function create_post_record(array $fields): array
 
 function update_post_record(int $id, array $fields): bool
 {
+    $pdo = get_db();
+    if ($pdo) {
+        try {
+            $stmt = $pdo->prepare('
+                UPDATE posts 
+                SET title = :title, excerpt = :excerpt, body = :body, image = :image, published_at = :published_at 
+                WHERE id = :id
+            ');
+            return $stmt->execute([
+                ':id'           => $id,
+                ':title'        => $fields['title'],
+                ':excerpt'      => $fields['excerpt'],
+                ':body'         => $fields['body'] ?? $fields['excerpt'],
+                ':image'        => $fields['image'] ?? 'assets/images/zabida_logo.png',
+                ':published_at' => $fields['published_at'] ?? date('Y-m-d'),
+            ]);
+        } catch (PDOException $e) {
+            error_log('ZABIDA update_post_record DB error: ' . $e->getMessage());
+        }
+    }
+
     $posts = read_posts_store();
     foreach ($posts as &$post) {
         if ((int)$post['id'] === $id) {
@@ -93,6 +165,16 @@ function update_post_record(int $id, array $fields): bool
 
 function delete_post_record(int $id): bool
 {
+    $pdo = get_db();
+    if ($pdo) {
+        try {
+            $stmt = $pdo->prepare('DELETE FROM posts WHERE id = :id');
+            return $stmt->execute([':id' => $id]);
+        } catch (PDOException $e) {
+            error_log('ZABIDA delete_post_record DB error: ' . $e->getMessage());
+        }
+    }
+
     $posts = read_posts_store();
     $filtered = array_values(array_filter($posts, fn($p) => (int)$p['id'] !== $id));
     if (count($filtered) === count($posts)) {

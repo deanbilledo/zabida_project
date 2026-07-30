@@ -14,7 +14,7 @@ function nav_class(string $page, string $current): string
 ?>
 <nav id="navbar" class="sticky top-0 z-50 bg-paper/95 backdrop-blur-sm border-b border-ink/10" role="navigation" aria-label="Main navigation">
   <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-    <a href="/index.php" class="flex items-center gap-3" aria-label="ZABIDA home">
+    <a href="../index.php" class="flex items-center gap-3" aria-label="ZABIDA home">
       <img src="/assets/images/zabida_logo.png" alt="ZABIDA logo" width="48" height="48" class="h-9 w-auto object-contain" onerror="this.style.display='none'">
       <span class="font-serif font-medium text-lg tracking-tight">ZABIDA</span>
     </a>
@@ -23,7 +23,7 @@ function nav_class(string $page, string $current): string
       <li><a href="/index.php#about" class="<?= nav_class('index', $current_page) ?>">About</a></li>
       <li><a href="/index.php#partners" class="<?= nav_class('index', $current_page) ?>">Member NGOs</a></li>
       <li><a href="/activities.php" class="<?= nav_class('activities', $current_page) ?>">Programs</a></li>
-      <li><a href="/index.php#blog" class="<?= nav_class('index', $current_page) ?>">Journal</a></li>
+      <li><a href="/index.php#blog" class="<?= nav_class('index', $current_page) ?>">Activities</a></li>
       <li><a href="/contact.php" class="border border-ink px-4 py-1.5 hover:bg-ink hover:text-paper transition-colors <?= $current_page === 'contact' ? 'bg-ink text-paper' : '' ?>">Contact</a></li>
     </ul>
 

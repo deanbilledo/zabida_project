@@ -20,10 +20,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
         if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'], true)) {
-            $filename = 'post_' . time() . '.' . $ext;
-            $dest = __DIR__ . '/../uploads/posts/' . $filename;
+            $filename   = 'post_' . time() . '.' . $ext;
+            $uploadDir  = __DIR__ . '/../uploads/posts/';
+            
+            // Auto-create uploads directory if it doesn't exist
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            $dest = $uploadDir . $filename;
             if (move_uploaded_file($_FILES['image']['tmp_name'], $dest)) {
                 $image = 'uploads/posts/' . $filename;
+            } else {
+                $errors[] = 'Failed to upload image. Check folder permissions.';
             }
         } else {
             $errors[] = 'Image must be a JPG, PNG, or WEBP file.';
@@ -32,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         create_post_record(compact('title', 'excerpt', 'body', 'image') + ['published_at' => $date, 'source' => 'manual']);
-        header('Location: /admin/posts.php');
+        header('Location: posts.php');
         exit;
     }
 }

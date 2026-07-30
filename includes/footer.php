@@ -24,6 +24,7 @@
           <li><a href="/activities.php" class="hover:text-gold">Programs</a></li>
           <li><a href="/index.php#blog" class="hover:text-gold">Journal</a></li>
           <li><a href="/contact.php" class="hover:text-gold">Contact</a></li>
+          <li><a href="./admin/login.php" class="hover:text-gold">Login</a></li>
         </ul>
       </div>
       <div>

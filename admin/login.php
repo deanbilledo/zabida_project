@@ -3,7 +3,7 @@ require __DIR__ . '/../config/auth.php';
 require __DIR__ . '/../includes/functions.php';
 
 if (is_logged_in()) {
-    header('Location: /admin/dashboard.php');
+    header('Location: dashboard.php');
     exit;
 }
 
@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_check($_POST['csrf_token'] ?? '')) {
         $error = 'Your session expired — please try again.';
     } elseif (attempt_login($_POST['username'] ?? '', $_POST['password'] ?? '')) {
-        header('Location: /admin/dashboard.php');
+        header('Location: dashboard.php');
         exit;
     } else {
         $error = 'Incorrect username or password.';

@@ -7,7 +7,8 @@ $id   = (int)($_GET['id'] ?? $_POST['id'] ?? 0);
 $post = get_post_by_id($id);
 
 if (!$post) {
-    header('Location: /admin/posts.php');
+    // FIXED: Changed /admin/posts.php to relative path posts.php
+    header('Location: posts.php');
     exit;
 }
 
@@ -26,7 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         update_post_record($id, compact('title', 'excerpt', 'body') + ['published_at' => $date]);
-        header('Location: /admin/posts.php');
+        
+        // FIXED: Changed /admin/posts.php to relative path posts.php
+        header('Location: posts.php');
         exit;
     }
 }

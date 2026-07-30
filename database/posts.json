@@ -1,11 +1,56 @@
 [
-  {
-    "id": 1,
-    "title": "Peaceweaver",
-    "excerpt": "Peace Advocates Zamboanga invites all Young Peaceweaver and Peaceweaver (Adult) Awardees to an online Kamustahan and Dialogue on July 30, 2026, starting at 1:00 PM onwards. Message the Facebook page to receive the meeting link.",
-    "body": "Peace Advocates Zamboanga invites all Young Peaceweaver and Peaceweaver (Adult) Awardees to an online Kamustahan and Dialogue on July 30, 2026, starting at 1:00 PM onwards.\n\nLet's catch up, celebrate our shared journey, and exchange ideas on how we can continue promoting peace in our communities.\n\nSimply send a message to the ZABIDA Facebook page to receive the meeting link.",
-    "image": "assets/images/zabida_logo.png",
-    "source": "facebook",
-    "published_at": "2026-07-30"
-  }
+    {
+        "id": 1,
+        "title": "Peaceweaver",
+        "excerpt": "Peace Advocates Zamboanga invites all Young Peaceweaver and Peaceweaver (Adult) Awardees to an online Kamustahan and Dialogue on July 30, 2026, starting at 1:00 PM onwards. Message the Facebook page to receive the meeting link.",
+        "body": "Peace Advocates Zamboanga invites all Young Peaceweaver and Peaceweaver (Adult) Awardees to an online Kamustahan and Dialogue on July 30, 2026, starting at 1:00 PM onwards.\n\nLet's catch up, celebrate our shared journey, and exchange ideas on how we can continue promoting peace in our communities.\n\nSimply send a message to the ZABIDA Facebook page to receive the meeting link.",
+        "image": "assets/images/zabida_logo.png",
+        "source": "facebook",
+        "published_at": "2026-07-30"
+    },
+    {
+        "id": 2,
+        "title": "Sample one",
+        "excerpt": "From Admin 1",
+        "body": "sdasdasdsad",
+        "image": "uploads/posts/post_1785406392.jpg",
+        "source": "manual",
+        "published_at": "2026-07-30"
+    },
+    {
+        "id": 3,
+        "title": "Sample 1",
+        "excerpt": "From admin 1",
+        "body": "ABC",
+        "image": "uploads/posts/post_1785406497.jpg",
+        "source": "manual",
+        "published_at": "2026-07-30"
+    },
+    {
+        "id": 4,
+        "title": "Sample 1",
+        "excerpt": "From admin 1",
+        "body": "abc",
+        "image": "uploads/posts/post_1785406615.jpg",
+        "source": "manual",
+        "published_at": "2026-07-30"
+    },
+    {
+        "id": 5,
+        "title": "Sample 1",
+        "excerpt": "From admin 1",
+        "body": "abc",
+        "image": "assets/images/zabida_logo.png",
+        "source": "manual",
+        "published_at": "2026-07-30"
+    },
+    {
+        "id": 6,
+        "title": "Sample 1",
+        "excerpt": "From admin 1",
+        "body": "abc",
+        "image": "uploads/posts/post_1785406625.jpg",
+        "source": "manual",
+        "published_at": "2026-07-30"
+    }
 ]

@@ -1,6 +1,5 @@
 <?php
 require __DIR__ . '/../config/auth.php';
-require __DIR__ . '/../config/database.php';
 require __DIR__ . '/../includes/functions.php';
 require_login();
 
@@ -15,7 +14,8 @@ require __DIR__ . '/../includes/header.php';
 
   <div class="flex items-center justify-between mb-10">
     <h1 class="font-serif text-3xl">Journal posts</h1>
-    <a href="/admin/create-post.php" class="bg-ink text-paper px-5 py-2.5 text-sm uppercase tracking-wide hover:bg-clay transition-colors">New post</a>
+    <!-- FIXED: Changed /admin/create-post.php to relative create-post.php -->
+    <a href="create-post.php" class="bg-ink text-paper px-5 py-2.5 text-sm uppercase tracking-wide hover:bg-clay transition-colors">New post</a>
   </div>
 
   <div class="divide-y divide-ink/10">
@@ -26,9 +26,14 @@ require __DIR__ . '/../includes/header.php';
           <p class="font-mono text-xs text-ink/40"><?= e($post['published_at']) ?> &middot; <?= e($post['source']) ?></p>
         </div>
         <div class="flex gap-4 text-sm uppercase tracking-wide">
-          <a href="/post.php?id=<?= (int)$post['id'] ?>" target="_blank" class="border-b border-ink/40 hover:text-clay hover:border-clay">View</a>
-          <a href="/admin/edit-post.php?id=<?= (int)$post['id'] ?>" class="border-b border-ink/40 hover:text-clay hover:border-clay">Edit</a>
-          <form action="/admin/delete-post.php" method="POST" onsubmit="return confirm('Delete this post? This cannot be undone.');">
+          <!-- FIXED: Reached post.php in root directory using ../post.php -->
+          <a href="../post.php?id=<?= (int)$post['id'] ?>" target="_blank" class="border-b border-ink/40 hover:text-clay hover:border-clay">View</a>
+          
+          <!-- FIXED: Changed /admin/edit-post.php to relative edit-post.php -->
+          <a href="edit-post.php?id=<?= (int)$post['id'] ?>" class="border-b border-ink/40 hover:text-clay hover:border-clay">Edit</a>
+          
+          <!-- FIXED: Changed action="/admin/delete-post.php" to relative action="delete-post.php" -->
+          <form action="delete-post.php" method="POST" onsubmit="return confirm('Delete this post? This cannot be undone.');">
             <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
             <input type="hidden" name="id" value="<?= (int)$post['id'] ?>">
             <button type="submit" class="border-b border-clay/60 text-clay hover:border-clay">Delete</button>

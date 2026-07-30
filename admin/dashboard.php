@@ -32,7 +32,7 @@ require __DIR__ . '/../includes/header.php';
 
   <div class="flex items-center justify-between mb-6">
     <h2 class="font-serif text-2xl">Recent posts</h2>
-    <a href="/admin/create-post.php" class="bg-ink text-paper px-5 py-2.5 text-sm uppercase tracking-wide hover:bg-clay transition-colors">New post</a>
+    <a href="create-post.php" class="bg-ink text-paper px-5 py-2.5 text-sm uppercase tracking-wide hover:bg-clay transition-colors">New post</a>
   </div>
 
   <div class="divide-y divide-ink/10">

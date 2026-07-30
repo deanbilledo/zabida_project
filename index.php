@@ -35,14 +35,14 @@ $posts = array_slice(get_all_posts(), 0, 3);
         <a href="#blog" class="bg-ink text-paper px-6 py-3 text-sm uppercase tracking-wide hover:bg-clay transition-colors">
           Read the journal
         </a>
-        <a href="/contact.php" class="border border-ink px-6 py-3 text-sm uppercase tracking-wide hover:bg-ink hover:text-paper transition-colors">
+        <a href="./contact.php" class="border border-ink px-6 py-3 text-sm uppercase tracking-wide hover:bg-ink hover:text-paper transition-colors">
           Get involved
         </a>
       </div>
     </div>
 
     <div class="hidden md:flex justify-center lg:justify-end">
-      <img src="/assets/images/zabida_consortium_logo.png" alt="ZABIDA consortium logo" class="w-full max-w-[320px] h-auto">
+      <img src="./assets/images/zabida_consortium_logo.png" alt="ZABIDA consortium logo" class="w-full max-w-[320px] h-auto">
     </div>
   </div>
 </section>
@@ -90,7 +90,7 @@ $posts = array_slice(get_all_posts(), 0, 3);
           <h3 class="font-serif text-2xl mb-1">KKI</h3>
           <p class="text-paper/60 text-sm">Katilingban sa Kalambuan, Inc. &mdash; promotes women and children's rights and socialized housing.</p>
         </div>
-        <img src="/assets/images/Katilingban.png" alt="" class="h-14 w-14 object-contain hidden sm:block" loading="lazy">
+        <img src="./assets/images/Katilingban.png" alt="" class="h-14 w-14 object-contain hidden sm:block" loading="lazy">
       </div>
       <div class="grid sm:grid-cols-[auto_1fr_auto] gap-4 sm:gap-8 py-7 items-center">
         <div class="w-1.5 h-14 bg-clay" aria-hidden="true"></div>
@@ -98,7 +98,7 @@ $posts = array_slice(get_all_posts(), 0, 3);
           <h3 class="font-serif text-2xl mb-1">PAZ</h3>
           <p class="text-paper/60 text-sm">Peace Advocates Zamboanga &mdash; a non-profit engaged in the promotion of peace, interreligious dialogue, and advocacy.</p>
         </div>
-        <img src="/assets/images/paz_logo.jpg" alt="" class="h-14 w-14 object-contain hidden sm:block" loading="lazy">
+        <img src="./assets/images/paz_logo.jpg" alt="" class="h-14 w-14 object-contain hidden sm:block" loading="lazy">
       </div>
       <div class="grid sm:grid-cols-[auto_1fr_auto] gap-4 sm:gap-8 py-7 items-center">
         <div class="w-1.5 h-14 bg-palm" aria-hidden="true"></div>
@@ -106,7 +106,7 @@ $posts = array_slice(get_all_posts(), 0, 3);
           <h3 class="font-serif text-2xl mb-1">ROOF</h3>
           <p class="text-paper/60 text-sm">Reach Out to Others Foundation &mdash; promotes sustainable agriculture and the welfare of marginalized sectors.</p>
         </div>
-        <img src="/assets/images/roof_logo.png" alt="" class="h-14 w-14 object-contain hidden sm:block" loading="lazy">
+        <img src="./assets/images/roof_logo.png" alt="" class="h-14 w-14 object-contain hidden sm:block" loading="lazy">
       </div>
       <div class="grid sm:grid-cols-[auto_1fr_auto] gap-4 sm:gap-8 py-7 items-center">
         <div class="w-1.5 h-14 bg-violet" aria-hidden="true"></div>
@@ -114,7 +114,7 @@ $posts = array_slice(get_all_posts(), 0, 3);
           <h3 class="font-serif text-2xl mb-1">Nagdilaab</h3>
           <p class="text-paper/60 text-sm">Nagdilaab Foundation Inc. &mdash; capability building, conflict transformation, dialogue, cultural contextualization, peacebuilding, and human rights in Basilan.</p>
         </div>
-        <img src="/assets/images/nagdilaab_logo.png" alt="" class="h-14 w-14 object-contain hidden sm:block" loading="lazy">
+        <img src="./assets/images/nagdilaab_logo.png" alt="" class="h-14 w-14 object-contain hidden sm:block" loading="lazy">
       </div>
     </div>
   </div>
@@ -172,7 +172,7 @@ $posts = array_slice(get_all_posts(), 0, 3);
           <p class="text-ink/60 leading-relaxed"><?= e($post['excerpt']) ?></p>
         </div>
         <div class="aspect-square w-full rounded-lg bg-gray-100 overflow-hidden flex items-center justify-center border border-ink/10">
-          <img src="/<?= e($post['image']) ?>" alt="" class="w-full h-full object-contain p-1">
+          <img src="./<?= e($post['image']) ?>" alt="" class="w-full h-full object-contain p-1">
         </div>
       </article>
     <?php endforeach; endif; ?>

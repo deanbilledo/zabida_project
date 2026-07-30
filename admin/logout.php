@@ -1,5 +1,9 @@
+
 <?php
 require __DIR__ . '/../config/auth.php';
+
 logout();
-header('Location: /admin/login.php');
+
+// Redirect to login.php within the admin folder
+header('Location: login.php');
 exit;
