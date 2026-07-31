@@ -6,6 +6,10 @@
  * https://developers.facebook.com/docs/graph-api/
  */
 
+if (file_exists(__DIR__ . '/secrets.php')) {
+    require __DIR__ . '/secrets.php';
+}
+
 define('FB_PAGE_ID', getenv('ZABIDA_FB_PAGE_ID') ?: 'zabidadotorg');
 define('FB_PAGE_ACCESS_TOKEN', getenv('ZABIDA_FB_PAGE_TOKEN') ?: '');
 define('FB_GRAPH_VERSION', 'v19.0');

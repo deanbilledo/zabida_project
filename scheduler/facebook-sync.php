@@ -10,7 +10,10 @@ if (php_sapi_name() !== 'cli') {
     exit('This script is intended for CLI/cron use only.');
 }
 
-require __DIR__ . '/../api/facebook-sync.php';
+require __DIR__ . '/../config/facebook.php';
+require __DIR__ . '/../config/database.php';
+require __DIR__ . '/../includes/functions.php';
+require __DIR__ . '/../api/facebook-sync.php'; // defines run_facebook_sync()
 
 $result = run_facebook_sync();
 
