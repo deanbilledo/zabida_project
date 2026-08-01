@@ -37,17 +37,31 @@ function fb_graph_get(string $url): array
 function run_facebook_sync(): array
 {
     if (!facebook_sync_ready()) {
-        return ['ok' => false, 'message' => 'No Facebook Page Access Token configured.'];
+        $msg = facebook_token_needs_reauth()
+            ? 'Your Facebook token has expired or been revoked. Please re-authenticate below.'
+            : 'No Facebook Page Access Token configured.';
+        return ['ok' => false, 'message' => $msg, 'needs_reauth' => facebook_token_needs_reauth()];
     }
+
+    $token = facebook_get_token();
 
     $url = FB_GRAPH_BASE . '/' . FB_PAGE_ID . '/posts?' . http_build_query([
         'fields'       => 'id,message,created_time,full_picture,permalink_url',
-        'access_token' => FB_PAGE_ACCESS_TOKEN,
+        'access_token' => $token,
         'limit'        => 25,
     ]);
 
     $response = fb_graph_get($url);
+
     if (!$response['ok']) {
+        if ($response['code'] === 190) {
+            fb_token_store_invalidate();
+            return [
+                'ok'           => false,
+                'message'      => 'Facebook access token expired or was revoked. Please re-authenticate below to resume syncing.',
+                'needs_reauth' => true,
+            ];
+        }
         return ['ok' => false, 'message' => 'Facebook API error: ' . $response['error']];
     }
 
@@ -55,41 +69,30 @@ function run_facebook_sync(): array
 
     $imported = 0;
     $skipped  = 0;
-    $pdo      = get_db(); // adjust to however database.php exposes the connection
 
     foreach ($data['data'] ?? [] as $fbPost) {
         if (empty($fbPost['message'])) {
             continue;
         }
 
-        $stmt = $pdo->prepare('SELECT id FROM posts WHERE facebook_post_id = ?');
-        $stmt->execute([$fbPost['id']]);
-        if ($stmt->fetch()) {
+        if (post_exists_by_facebook_id($fbPost['id'])) {
             $skipped++;
             continue;
         }
 
-        $title   = mb_substr(strtok($fbPost['message'], "\n"), 0, 120);
-        $excerpt = mb_substr($fbPost['message'], 0, 200);
-        $body    = $fbPost['message'];
-        $image   = null;
-
+        $image = null;
         if (!empty($fbPost['full_picture'])) {
             $image = download_facebook_image($fbPost['full_picture'], $fbPost['id']);
         }
 
-        $insert = $pdo->prepare(
-            'INSERT INTO posts (title, excerpt, body, image, published_at, facebook_post_id, source)
-             VALUES (?, ?, ?, ?, ?, ?, ?)'
-        );
-        $insert->execute([
-            $title,
-            $excerpt,
-            $body,
-            $image,
-            date('Y-m-d H:i:s', strtotime($fbPost['created_time'])),
-            $fbPost['id'],
-            'facebook',
+        create_post_record([
+            'title'            => mb_substr(strtok($fbPost['message'], "\n"), 0, 120),
+            'excerpt'          => mb_substr($fbPost['message'], 0, 200),
+            'body'             => $fbPost['message'],
+            'image'            => $image ?? 'assets/images/zabida_logo.png',
+            'source'           => 'facebook',
+            'published_at'     => date('Y-m-d', strtotime($fbPost['created_time'])),
+            'facebook_post_id' => $fbPost['id'],
         ]);
 
         $imported++;

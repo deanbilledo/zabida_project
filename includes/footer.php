@@ -19,11 +19,11 @@
       <div>
         <h3 class="font-mono text-xs uppercase tracking-wide text-paper/50 mb-4">Quick links</h3>
         <ul class="space-y-2 text-sm text-paper/70">
-          <li><a href="/index.php#about" class="hover:text-gold">About</a></li>
-          <li><a href="/index.php#partners" class="hover:text-gold">Member NGOs</a></li>
-          <li><a href="/activities.php" class="hover:text-gold">Programs</a></li>
-          <li><a href="/index.php#blog" class="hover:text-gold">Journal</a></li>
-          <li><a href="/contact.php" class="hover:text-gold">Contact</a></li>
+          <li><a href="./index.php#about" class="hover:text-gold">About</a></li>
+          <li><a href="./index.php#partners" class="hover:text-gold">Member NGOs</a></li>
+          <li><a href="./activities.php" class="hover:text-gold">Programs</a></li>
+          <li><a href="./index.php#blog" class="hover:text-gold">Journal</a></li>
+          <li><a href="./contact.php" class="hover:text-gold">Contact</a></li>
           <li><a href="./admin/login.php" class="hover:text-gold">Login</a></li>
         </ul>
       </div>
@@ -33,7 +33,7 @@
           <li>Macrohon Compound, Suterville,<br>San Jose Gusu, Zamboanga City</li>
           <li><a href="tel:0629902410" class="hover:text-gold">0629902410</a></li>
           <li><a href="mailto:zabidamail.ph@gmail.com" class="hover:text-gold">zabidamail.ph@gmail.com</a></li>
-          <li><a href="https://www.facebook.com/zabida.org" target="_blank" rel="noopener noreferrer" class="hover:text-gold">facebook.com/zabida.org</a></li>
+          <li><a href="https://www.facebook.com/zabidadotorg/" target="_blank" rel="noopener noreferrer" class="hover:text-gold">facebook.com/zabida.org</a></li>
           <li><a href="https://www.youtube.com/zabidaorg" target="_blank" rel="noopener noreferrer" class="hover:text-gold">youtube.com/zabidaorg</a></li>
         </ul>
       </div>

@@ -42,10 +42,15 @@ require __DIR__ . '/../includes/header.php';
           <p class="font-serif text-lg"><?= e($post['title']) ?></p>
           <p class="font-mono text-xs text-ink/40"><?= e($post['published_at']) ?> &middot; <?= e($post['source']) ?></p>
         </div>
-        <a href="/admin/edit-post.php?id=<?= (int)$post['id'] ?>" class="text-sm uppercase tracking-wide border-b border-ink hover:text-clay hover:border-clay">Edit</a>
+        <a href="edit-post.php?id=<?= (int)$post['id'] ?>"
+           class="js-edit-link text-sm uppercase tracking-wide border-b border-ink hover:text-clay hover:border-clay"
+           data-post-id="<?= (int)$post['id'] ?>">Edit</a>
       </div>
     <?php endforeach; ?>
     <?php if (empty($posts)): ?><p class="text-ink/50 py-6">No posts yet.</p><?php endif; ?>
   </div>
 </main>
+
+<?php require __DIR__ . '/../includes/admin-post-modal.php'; ?>
+
 <?php require __DIR__ . '/../includes/footer.php'; ?>

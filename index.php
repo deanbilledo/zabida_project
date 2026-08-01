@@ -127,7 +127,7 @@ $posts = array_slice(get_all_posts(), 0, 3);
       <p class="font-mono text-xs uppercase tracking-[0.2em] text-ink/50 mb-4">What we do</p>
       <h2 class="font-serif text-3xl md:text-4xl">Focus areas</h2>
     </div>
-    <a href="/activities.php" class="text-sm uppercase tracking-wide border-b border-ink hover:text-clay hover:border-clay transition-colors">See all programs &rarr;</a>
+    <a href="./activities.php" class="text-sm uppercase tracking-wide border-b border-ink hover:text-clay hover:border-clay transition-colors">See all programs &rarr;</a>
   </div>
 
   <div class="grid md:grid-cols-2 gap-x-16 gap-y-12">
