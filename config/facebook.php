@@ -10,12 +10,30 @@ if (file_exists(__DIR__ . '/secrets.php')) {
     require __DIR__ . '/secrets.php';
 }
 require __DIR__ . '/fb-token-store.php';
+require __DIR__ . '/fb-settings-store.php';
 
-define('FB_PAGE_ID', getenv('ZABIDA_FB_PAGE_ID') ?: '');
-define('FB_APP_ID', getenv('ZABIDA_FB_APP_ID') ?: '');
-define('FB_APP_SECRET', getenv('ZABIDA_FB_APP_SECRET') ?: '');
 define('FB_GRAPH_VERSION', 'v19.0');
 define('FB_GRAPH_BASE', 'https://graph.facebook.com/' . FB_GRAPH_VERSION);
+
+/**
+ * Page ID, App ID, and App Secret all prefer the admin-entered settings
+ * store over the env vars in secrets.php, so the UI form can override
+ * without editing files by hand.
+ */
+function facebook_page_id(): string
+{
+    return fb_settings_get('page_id') ?: (getenv('ZABIDA_FB_PAGE_ID') ?: '');
+}
+
+function facebook_app_id(): string
+{
+    return fb_settings_get('app_id') ?: (getenv('ZABIDA_FB_APP_ID') ?: '');
+}
+
+function facebook_app_secret(): string
+{
+    return fb_settings_get('app_secret') ?: (getenv('ZABIDA_FB_APP_SECRET') ?: '');
+}
 
 /**
  * Returns the active Page Access Token, preferring the refreshed one in
@@ -31,11 +49,12 @@ function facebook_get_token(): string
 }
 
 /**
- * Whether sync can actually run — false until a real, valid token exists.
+ * Whether sync can actually run — false until both a Page ID and a
+ * valid token exist.
  */
 function facebook_sync_ready(): bool
 {
-    return facebook_get_token() !== '';
+    return facebook_page_id() !== '' && facebook_get_token() !== '';
 }
 
 /**

@@ -14,24 +14,64 @@ function fb_graph_get(string $url): array
         CURLOPT_SSL_VERIFYPEER => true,
     ]);
 
-    $body    = curl_exec($ch);
-    $errno   = curl_errno($ch);
-    $error   = curl_error($ch);
-    $status  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $body   = curl_exec($ch);
+    $errno  = curl_errno($ch);
+    $error  = curl_error($ch);
+    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 
     if ($errno) {
-        return ['ok' => false, 'error' => "cURL error ({$errno}): {$error}"];
+        return ['ok' => false, 'error' => "cURL error ({$errno}): {$error}", 'code' => null];
     }
 
     $data = json_decode($body, true);
 
     if ($status !== 200) {
-        $msg = $data['error']['message'] ?? "HTTP {$status} with no error body";
-        return ['ok' => false, 'error' => $msg];
+        $msg  = $data['error']['message'] ?? "HTTP {$status} with no error body";
+        $code = $data['error']['code'] ?? null;
+        return ['ok' => false, 'error' => $msg, 'code' => $code];
     }
 
     return ['ok' => true, 'data' => $data];
+}
+
+/**
+ * Exchanges a short-lived token for a long-lived one (~60 days, or
+ * non-expiring for Page tokens) and persists it via fb_token_store_write().
+ */
+
+function facebook_exchange_long_lived_token(string $shortLivedToken): array
+{
+    $appId     = facebook_app_id();
+    $appSecret = facebook_app_secret();
+
+    if ($appId === '' || $appSecret === '') {
+        return ['ok' => false, 'error' => 'App ID / App Secret not configured — cannot exchange for a long-lived token.'];
+    }
+
+    $url = FB_GRAPH_BASE . '/oauth/access_token?' . http_build_query([
+        'grant_type'        => 'fb_exchange_token',
+        'client_id'         => $appId,
+        'client_secret'     => $appSecret,
+        'fb_exchange_token' => $shortLivedToken,
+    ]);
+
+    $response = fb_graph_get($url);
+    if (!$response['ok']) {
+        return ['ok' => false, 'error' => $response['error']];
+    }
+
+    $token     = $response['data']['access_token'] ?? null;
+    $expiresIn = $response['data']['expires_in'] ?? null;
+
+    if (!$token) {
+        return ['ok' => false, 'error' => 'Facebook did not return a long-lived token.'];
+    }
+
+    $expiresAt = $expiresIn ? (time() + (int)$expiresIn) : null;
+    fb_token_store_write($token, $expiresAt, true);
+
+    return ['ok' => true, 'expires_at' => $expiresAt];
 }
 
 function run_facebook_sync(): array
@@ -39,13 +79,14 @@ function run_facebook_sync(): array
     if (!facebook_sync_ready()) {
         $msg = facebook_token_needs_reauth()
             ? 'Your Facebook token has expired or been revoked. Please re-authenticate below.'
-            : 'No Facebook Page Access Token configured.';
+            : 'Facebook Page ID and/or access token are not configured yet.';
         return ['ok' => false, 'message' => $msg, 'needs_reauth' => facebook_token_needs_reauth()];
     }
 
-    $token = facebook_get_token();
+    $token  = facebook_get_token();
+    $pageId = facebook_page_id();
 
-    $url = FB_GRAPH_BASE . '/' . FB_PAGE_ID . '/posts?' . http_build_query([
+    $url = FB_GRAPH_BASE . '/' . $pageId . '/posts?' . http_build_query([
         'fields'       => 'id,message,created_time,full_picture,permalink_url',
         'access_token' => $token,
         'limit'        => 25,

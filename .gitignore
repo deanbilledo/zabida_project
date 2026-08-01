@@ -1,2 +1,3 @@
 config/secrets.php
 config/fb-token.json
+config/fb-settings.json
